@@ -2,233 +2,254 @@
 <html>
 
 <head>
-  <meta charset="utf-8">
-  <title>実験</title>
-  <script src="processing.js"></script>
+    <meta charset="utf-8">
+    <title>実験</title>
+    <script>
+        //管理用変数
+        //Enterキーを押すとスタートのシーンを追加してない
+        //デバック用の残骸が残ってる
+        var n = 0;
+        var second = 0;
+        var true_second = 0;
+        var t = 1;
+        var count = 0;
+        var before_time = 0;
+        var answer_time = 0;
+        var answer_count = 0;
+        var time_count = [];
+        //var presure = ["High", "Low"];
+        //var selected_presure = presure[Math.floor(Math.random() * presure.length)];
+
+        //タイマー用変数
+        var start = new Date();
+        var startHour = start.getHours();
+        var startMin = start.getMinutes();
+        var startSec = start.getSeconds();
+
+        //語群
+        //"洗濯機", "テレビ", "カメラ", "炊飯器", "パソコン", "エアコン", "レンジ", "イス", "ベッド", "プリンター", "机", "加湿器", "除湿機"
+        var Word = [["洗濯機", 1], ["テレビ", 3], ["カメラ", 2], ["炊飯器", 4], ["パソコン", 1], ["エアコン", 3],
+        ["レンジ", 2], ["イス", 4], ["ベッド", 1], ["プリンター", 3], ["つくえ", 2], ["加湿器", 4], ["除湿機", 2]];
+
+        document.addEventListener('keypress', keypress_ivent);
+
+        // function makeNonliner(s) {
+        //     if (selected_presure == "High") {
+        //         if (second < 240) {
+        //             second = second * 3 / 2;
+        //         } else if (second >= 240) {
+        //             second = 360 + t * 2 / 3;
+        //             t += 1;
+        //         }
+        //     } else if (selected_presure == "Low") {
+        //         if (second < 360) {
+        //             second = second * 2 / 3;
+        //         } else if (second >= 360) {
+        //             second = 240 + t * 3 / 2;
+        //             t += 1;
+        //         }
+        //     }
+        //     return second;
+        // }
+
+        function getRandam(n, m) {
+            let num = Math.floor(Math.random() * (m + 1 - n)) + n;
+            return num;
+            // console.log(num);
+        };
+
+        function keypress_ivent(e) {
+            if (e.key === 'Enter') {
+                Word[count][1] = Word[count][1] + 1;
+                if (Word[count][1] > 4) {
+                    Word[count][1] = 1;
+                }
+                count = getRandam(0, 12);
+            }
+
+            answer_time = true_second - before_time;
+            before_time = true_second;
+            answer_count += 1;
+            time_count.push(answer_time);
+            searchWord.innerHTML = Word[count][0];
+            searchRank.innerHTML = Word[count][1] + "位";
+
+            return false;
+        }
+
+        function clearCasnvas() {
+            var canvas = document.getElementById("main");
+            var context = canvas.getContext("2d");
+
+            context.clearRect(0, 0, canvas.width, canvas.height);
+
+        }
+
+        //プログレスバー作成
+        function drawRect() {
+            var canvas = document.getElementById("main");
+            var context = canvas.getContext("2d");
+
+            clearCasnvas();
+
+            n = (600 - second) / 6;
+
+            for (var i = 0; i < n; i++) {
+                context.fillStyle = "green";
+                context.strokeStyle = "black"
+                context.fillRect(644 - 6 * i, 10, 5, 30);
+            }
+            context.strokeStyle = "black"
+            context.strokeRect(50, 10, 600, 30);
+            context.strokeStyle = "black"
+            context.strokeRect(50, 10, 600, 30);
+            context.strokeStyle = "black"
+            context.strokeRect(50, 10, 600, 30);
+
+
+        }
+
+        function clock() {
+            //管理用変数
+
+            //時計関係の変数
+            var now = new Date();
+            var hour = now.getHours();
+            var min = now.getMinutes();
+            var sec = now.getSeconds();
+
+            //プログレスバー関係の変数
+            var count_rect = 100;
+
+            //タイマー表示用の変数
+            var timeElement = document.getElementById("time");
+            var time2Element = document.getElementById("time2");
+            var timerElement = document.getElementById("timer")
+
+            //timeElement.innerHTML = hour + ":" + min + ":" + sec;
+            // console.log(hour);
+            // console.log(typeof (hour));
+            //console.log(startHour);
+            //console.log(hour - startHour);
+            //time2Element.innerHTML = (hour - startHour) + ":" + (min - startMin) + ":" + (sec - startSec);
+
+            //開始時刻と現在時刻の差
+            var timerHour = hour - startHour;
+            var timerMin = min - startMin;
+            var timerSec = sec - startSec;
+
+            //値がマイナスの場合プラスに変更する
+            if (timerHour < 0) {
+                timerHour = timerHour * -1;
+            }
+            if (timerHour < 0) {
+                timerMin = timerMin * -1;
+            }
+            if (timerHour < 0) {
+                timerSec = timerSec * -1;
+            }
+
+            //秒に変換
+            second = (timerHour * 3600) + (timerMin * 60) + timerSec;
+            true_second = (timerHour * 3600) + (timerMin * 60) + timerSec;
+
+            //非線形時計
+            //second = makeNonliner();
+            //timerElement.innerHTML = second;
+
+            drawRect();
+            if (second > 600) {
+                // alert(answer_count);
+                // alert(time_count);
+                //結果表示用
+                var result = document.getElementById("result_area");
+                var presureType = document.getElementById("presure_area");
+                var answerCount = document.getElementById("answer_area");
+                var timeCount = document.getElementById("time_area");
+
+                result.innerHTML = "結果";
+                presureType.innerHTML = selected_presure;
+                answerCount.innerHTML = "回答数" + answer_count;
+                timeCount.innerHTML = "回答時間" + time_count;
+            } else {
+                //1秒ごとにループ
+                //ここを変更しても意味がない
+                //1秒ごとにループする中で，値を変更する
+                setTimeout("clock()", 1000);
+
+            }
+
+        }
+
+        function main() {
+            var searchWord = document.getElementById("searchWord");
+            var searchRank = document.getElementById("searchRank");
+            searchWord.innerHTML = Word[count][0];
+            searchRank.innerHTML = Word[count][1] + "位";
+
+            //console.log(selected_presure);
+
+            clock();
+        }
+    </script>
+    <style>
+        canvas {
+            border: solid #000000 1px;
+        }
+
+        #clock {
+            font-family: "Courier New";
+            background-color: #CCCCCC;
+            border: solid #999999 1px;
+            color: #000000;
+            width: 300px;
+            padding: 10px;
+        }
+
+        #time {
+            font-size: 42pt;
+        }
+
+        #time2 {
+            font-size: 42pt;
+        }
+
+        #timer {
+            font-size: 42pt;
+        }
+    </style>
 </head>
 
-<body class="box">
-  <script type="text/processing">
-//non-liner
-//Good Design
-//random presure
-
-// メモ帳のやつの記入欄の追加　これはFormの方をいじればOK
-
-
-int scene = 1;
-
-float time = 0;
-float time2 = 0;
-float base_time = 0;
-float base_timeA = 0;
-
-int f = 0;
-float n = 0;
-
-int trust_time = 0;
-
-int rA = int(random(0, 13));
-int rB = int(random(0, 5));
-
-int rank = int(random(1, 5));
-String Word[][] = {{"包丁",1},{"フライパン",3},{"ボウル",2},{"まな板",4},{"計量器",1},{"フライ返し",3},{"ざる",2},{"耐熱皿",4},{"蒸し器",1},{"ナイフ",3},{"フォーク",2},{"スプーン",4},{"菜箸",2}};
-String wordA[] = {"洗濯機", "テレビ", "カメラ", "炊飯器", "パソコン", "エアコン", "レンジ", "イス", "ベッド", "プリンター", "つくえ", "加湿器", "除湿機"};
-String wordB[] = {"1", "3", "2", "4"};
-
-int count_answer = 0;
-int count_time[] = {};
-float before_time = 0;
-
-String presureList[] = {"Low","High"};
-int presure_selecter = 0;
-String play_presure = "";
-
-void setup() {
-  size(700, 300);
-  background(255);
-  PFont font = createFont("utf-8", 50);
-  textFont(font);
-  document.getElementById('area').style.fontSize = 150+"%";
-  document.getElementById('a_area').style.fontSize = 150+"%";
-  document.getElementById('b_area').style.fontSize = 150+"%";
-
-  presure_selecter = int(random(0,2));
-}
-
-void draw() {
-  background(255);
-  switch(scene) {
-  case 1:
-    fill(0);
-    textSize(56);
-    textAlign(CENTER);
-    text("Enterキーを押すとスタート", width/2, height/2);
-    play_presure = presureList[presure_selecter];
-    //text(play_presure,width/2,height/4);
-    //text(Word[0][1],width/2,height/4);
-
-    break;
-
-  case 2:
-    background(255);
-    textSize(46);
-    textAlign(CENTER);
-    fill(0);
-    text("残り時間", width/2-135, height/4-20);
-    text("検索ワード", width/2-170, height/2+50);
-    text("順位", width*3/4, height/2+50);
-    text(Word[rA][0], width/2-210, height/2+110);
-    //text(wordB[rB], width/2-40, height/2+60);
-    text(Word[rA][1], width*3/4, height/2+110);
-    //text("Push Enterkey to Next", width/2, height*3/4+70);
-    noFill();
-    //progressBar
-    rect(width/2-250, height/4, 500, 500/16);
-
-
-    //display information
-    timer();
-    makeProgressBar();
-    nextScene();
-
-    break;
-  case 3:
-    size(700, 130);
-    background(255);
-    textSize(30);
-    textAlign(CENTER);
-    fill(0);
-    text("終了です．", width/2, height/4);
-    text("ご協力ありがとうございます．", width/2, height/4+30);
-    text("このページを閉じずに，残したまま，", width/2, height/4+60);
-    text("アンケートフォームにお戻りください．", width/2, height/4+90);
-    //println(count_answer);
-    //println(count_time);
-    noLoop();
-    document.getElementById('presure_area').innerHTML = "タイプ："+play_presure;
-    document.getElementById('answer_area').innerHTML = "回答数："+count_answer;
-    document.getElementById('timer_area').innerHTML = "回答時間："+count_time;
-  }
-}
-
-void timer() {
-  if(play_presure == "High"){
-    if (base_time == 0) {
-        base_time = millis();
-      }
-      time = millis() - base_time;
-      time = time/1000;
-      trust_time = time;
-      //text("true_time:"+int(time), width/2, height/2+10);
-      if (time < 240) {
-        f = 1;
-        time = time * 3/2;
-        //text("fast_time:"+int(time), width/2, height/2);
-        //text("fast", width/2, height/2-200);
-      } else if (time >= 240) {
-        f = 2;
-        if (base_timeA == 0) {
-
-          base_timeA = millis();
-        }
-        time2 = millis() - base_timeA;
-        time2 = time2/1000;
-
-        time2 = time2 * 3/2;
-        time2 = time2 + 360;
-        //text("slow_time:"+int(t), width/2, height/2);
-        //text("slow", width/2, height/2-200);
-      }
-  }else if(play_presure == "Low"){
-    if (base_time == 0) {
-      base_time = millis();
-    }
-    time = millis() - base_time;
-    time = time/1000;
-    trust_time = time;
-    //text("true_time:"+int(time), width/2, height/2+10);
-    if (time < 360) {
-      f = 1;
-      time = time * 2/3;
-      //text("slow_time:"+int(time), width/2, height/2);
-      //text("fast", width/2, height/2-200);
-    } else if (time >= 360) {
-      f = 2;
-      if (base_timeA == 0) {
-        base_timeA = millis();
-      }
-      time2 = millis() - base_timeA;
-      time2 = time2/1000;
-
-      time2 = time2 * 3/2;
-      time2 = time2 + 240;
-      //text("fast_time:"+int(time), width/2, height/2);
-      //text("slow", width/2, height/2-200);
-    }
-  }
-}
-
-
-
-void makeProgressBar() {
-  if (f == 1) {
-    n = (600-time)/6;
-  } else if (f == 2) {
-    n = (600-time2)/6;
-  }
-  fill(0, 255, 0);
-  for (int i = 0; i < n; i++) {
-    if (scene == 2) {
-      rect((width/2+250)-5*i, height/4, 5, 500/16);
-    }
-  }
-}
-
-
-void nextScene() {
-  if (n < 0) {
-    scene = 3;
-  }
-}
-
-
-void keyReleased() {
-  if (scene == 1) {
-    if (keyCode == ENTER) {
-      scene = 2;
-    }
-  } else if (scene == 2) {
-    if (keyCode == ENTER) {
-      count_answer += 1;
-      Word[rA][1] = Word[rA][1] + 1;
-      if(Word[rA][1] > 4){
-        Word[rA][1] = 1;
-      }
-
-      if (int(trust_time - before_time) == 0) {
-      }else{
-        count_time = append(count_time, int(trust_time-before_time));
-        before_time = trust_time;
-      }
-
-      rA = int(random(0, 13));
-      rB = int(random(0, 5));
-      rank = int(random(1, 5));
-    }
-  }
-}
-
-
-    </script>
-  <canvas></canvas>
-  <p id="area">語群</p>
-  <p id="a_area">包丁　フライパン　ボウル　まな板　計量器　フライ返し</p>
-  <p id="b_area">ざる　耐熱皿　蒸し器　ナイフ　フォーク　スプーン　菜箸</p>
-
-  <div id="presure_area"></div>
-  <div id="answer_area"></div>
-  <div id="timer_area"></div>
+<body onLoad="main()">
+    </div>
+    <canvas id="main" width="700" height="200">
+    </canvas>
+    <font size="6">
+        <div style="position: absolute;top:60px;left: 150px;">検索ワード</div>
+        <div style="position: absolute;top:60px;left: 425px;">検索順位 </div>
+        <div style="position: absolute;top:130px;left: 150px;">
+            <div id="searchWord"></div>
+        </div>
+        <div style="position: absolute;top:130px;left: 425px;">
+            <div id="searchRank"></div>
+        </div>
+    </font>
+    <!-- <font size="5">
+    <p id="worfList_area">語群</p>
+    <p id="wordA_area">筆箱　鉛筆　消しゴム　定規　赤ペン　シャーペン</p>
+    <p id="wordB_area">サッカー　野球　バスケ　バレー　陸上　テニス　水泳</p>
+  </font> -->
+    <!-- <div id="clock">
+        <div id="time">--:--:--</div>
+        <div id="time2">--:--:--</div>
+        <div id="timer"></div>
+    </div> -->
+    <font size="6">
+        <div id="result_area"></div>
+        <div id="presure_area"></div>
+        <div id="answer_area"></div>
+        <div id="time_area"></div>
+    </font>
 </body>
 
 </html>
