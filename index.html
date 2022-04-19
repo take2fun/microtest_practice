@@ -52,11 +52,28 @@
         //     return second;
         // }
 
+        function onClickCopy() {
+            // コピー対象のpタグオブジェクトを取得する.
+            // let pTag = document.getElementById('copyTarget');
+            // コピー内容を選択する.
+            let range = document.createRange();
+            var copy_word = Word[count][0];
+            range.selectNodeContents(searchWord);
+            let selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            // 選択したものをコピーする.
+            document.execCommand('copy');
+            // コピー内容の選択を解除する.
+            selection.removeAllRanges();
+        }
+
         function getRandam(n, m) {
             let num = Math.floor(Math.random() * (m + 1 - n)) + n;
             return num;
             // console.log(num);
-        };
+        }
+
 
         function keypress_ivent(e) {
             if (e.key === 'Enter') {
@@ -72,7 +89,24 @@
             answer_count += 1;
             time_count.push(answer_time);
             searchWord.innerHTML = Word[count][0];
-            searchRank.innerHTML = Word[count][1] + "番目";
+            searchRank.innerHTML = Word[count][1] + "位";
+
+            return false;
+        }
+
+        function keypress() {
+            Word[count][1] = Word[count][1] + 1;
+            if (Word[count][1] > 4) {
+                Word[count][1] = 1;
+            }
+            count = getRandam(0, 12);
+
+            answer_time = true_second - before_time;
+            before_time = true_second;
+            answer_count += 1;
+            time_count.push(answer_time);
+            searchWord.innerHTML = Word[count][0];
+            searchRank.innerHTML = Word[count][1] + "位";
 
             return false;
         }
@@ -110,8 +144,6 @@
         }
 
         function clock() {
-            //管理用変数
-
             //時計関係の変数
             var now = new Date();
             var hour = now.getHours();
@@ -179,16 +211,16 @@
 
             }
 
+
         }
 
         function main() {
             var searchWord = document.getElementById("searchWord");
             var searchRank = document.getElementById("searchRank");
             searchWord.innerHTML = Word[count][0];
-            searchRank.innerHTML = Word[count][1] + "番目";
+            searchRank.innerHTML = Word[count][1] + "位";
 
             //console.log(selected_presure);
-
             clock();
         }
     </script>
@@ -226,12 +258,20 @@
     </canvas>
     <font size="6">
         <div style="position: absolute;top:60px;left: 150px;">検索ワード</div>
-        <div style="position: absolute;top:60px;left: 425px;">検索結果 </div>
+        <div style="position: absolute;top:60px;left: 425px;">検索順位 </div>
         <div style="position: absolute;top:130px;left: 150px;">
             <div id="searchWord"></div>
         </div>
         <div style="position: absolute;top:130px;left: 425px;">
             <div id="searchRank"></div>
+        </div>
+        <div id="area">
+            <div style="position: absolute;top:165px;left: 145px;">
+                <input type="button" id="copy" value="コピーする" onclick="onClickCopy();">
+            </div>
+            <div style="position: absolute;top:165px;left: 420px;">
+                <input type="button" id="copy" value="次へ" onclick="keypress();">
+            </div>
         </div>
     </font>
     <!-- <font size="5">
