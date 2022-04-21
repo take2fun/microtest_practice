@@ -7,7 +7,7 @@
     <script>
         //管理用変数
         //Enterキーを押すとスタートのシーンを追加してない
-        //デバック用の残骸が残ってる
+        //デバック用の残骸がある
         var n = 0;
         var second = 0;
         var true_second = 0;
@@ -17,6 +17,8 @@
         var answer_time = 0;
         var answer_count = 0;
         var time_count = [];
+        var search_count = [];
+        var rank_count = [];
         //var presure = ["High", "Low"];
         //var selected_presure = presure[Math.floor(Math.random() * presure.length)];
 
@@ -81,13 +83,19 @@
                 if (Word[count][1] > 4) {
                     Word[count][1] = 1;
                 }
-                count = getRandam(0, 12);
+                //count = getRandam(0, 12);
+                count += 1;
+                if (count > 12) {
+                    count = 0;
+                }
             }
 
             answer_time = true_second - before_time;
             before_time = true_second;
             answer_count += 1;
             time_count.push(answer_time);
+            search_count.push(Word[count][0]);
+            rank_count.push(Word[count][1] + "位");
             searchWord.innerHTML = Word[count][0];
             searchRank.innerHTML = Word[count][1] + "位";
 
@@ -99,12 +107,17 @@
             if (Word[count][1] > 4) {
                 Word[count][1] = 1;
             }
-            count = getRandam(0, 12);
+            count += 1;
+            if (count > 12) {
+                count = 0;
+            }
 
             answer_time = true_second - before_time;
             before_time = true_second;
             answer_count += 1;
             time_count.push(answer_time);
+            search_count.push(Word[count][0]);
+            rank_count.push(Word[count][1] + "位");
             searchWord.innerHTML = Word[count][0];
             searchRank.innerHTML = Word[count][1] + "位";
 
@@ -195,14 +208,18 @@
                 // alert(time_count);
                 //結果表示用
                 var result = document.getElementById("result_area");
-                var presureType = document.getElementById("presure_area");
+                //var presureType = document.getElementById("presure_area");
                 var answerCount = document.getElementById("answer_area");
                 var timeCount = document.getElementById("time_area");
+                // var searchCount = document.getElementById("search_area");
+                // var rankCount = document.getElementById("rank_area");
 
                 result.innerHTML = "結果";
-                presureType.innerHTML = selected_presure;
+                //presureType.innerHTML = selected_presure;
                 answerCount.innerHTML = "回答数" + answer_count;
                 timeCount.innerHTML = "回答時間" + time_count;
+                // searchCount.innerHTML = "検索したワード" + search_count;
+                // rankCount.innerHTML = "検索順位" + rank_count;
             } else {
                 //1秒ごとにループ
                 //ここを変更しても意味がない
@@ -270,7 +287,7 @@
                 <input type="button" id="copy" value="コピーする" onclick="onClickCopy();">
             </div>
             <div style="position: absolute;top:165px;left: 420px;">
-                <input type="button" id="copy" value="次へ" onclick="keypress();">
+                <input type="button" id="next" value="次へ" onclick="keypress();">
             </div>
         </div>
     </font>
@@ -286,7 +303,9 @@
     </div> -->
     <font size="6">
         <div id="result_area"></div>
-        <div id="presure_area"></div>
+        <!-- <div id="presure_area"></div> -->
+        <!-- <div id="search_area"></div>
+        <div id="rank_area"></div> -->
         <div id="answer_area"></div>
         <div id="time_area"></div>
     </font>
