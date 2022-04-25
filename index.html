@@ -117,9 +117,9 @@
             answer_count += 1;
             time_count.push(answer_time);
             search_count.push(Word[count][0]);
-            rank_count.push(Word[count][1] + "位");
+            rank_count.push(Word[count][1] + "番目");
             searchWord.innerHTML = Word[count][0];
-            searchRank.innerHTML = Word[count][1] + "位";
+            searchRank.innerHTML = Word[count][1] + "番目";
 
             return false;
         }
@@ -235,7 +235,7 @@
             var searchWord = document.getElementById("searchWord");
             var searchRank = document.getElementById("searchRank");
             searchWord.innerHTML = Word[count][0];
-            searchRank.innerHTML = Word[count][1] + "位";
+            searchRank.innerHTML = Word[count][1] + "番目";
 
             //console.log(selected_presure);
             clock();
@@ -275,7 +275,7 @@
     </canvas>
     <font size="6">
         <div style="position: absolute;top:60px;left: 150px;">検索ワード</div>
-        <div style="position: absolute;top:60px;left: 425px;">検索順位 </div>
+        <div style="position: absolute;top:60px;left: 425px;">検索結果 </div>
         <div style="position: absolute;top:130px;left: 150px;">
             <div id="searchWord"></div>
         </div>
